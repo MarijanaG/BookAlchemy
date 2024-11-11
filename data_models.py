@@ -1,43 +1,42 @@
 from flask_sqlalchemy import SQLAlchemy
 
-
+#creating an instance of SQLAlchemy for interacting with the database
 db = SQLAlchemy()
 
 
+#author model represents authors in the database
 class Author(db.Model):
-    __tablename__ = 'authors'
-
+    __tablename__ = 'author'
+    # id is the primary key for each author, it is automatically incremented
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    birth_date = db.Column(db.Date, nullable=True)
-    date_of_death = db.Column(db.Date, nullable=True)
+    #birth_date and date_of_death are optional fields to store dates as strings
+    birth_date = db.Column(db.String(10))
+    date_of_death = db.Column(db.String(10))
 
-
+    # __repr__ method is used to provide a string representation of the object
     def __repr__(self):
-        # debug method
-        return f"<Author(id={self.id}, name='{self.name}', birth_date={self.birth_date}, date_of_death={self.date_of_death})>"
+        return f'<Author {self.name}>'
 
 
-    def __str__(self):
-        # display what is inside
-        return f"{self.name} (Born: {self.birth_date}, Died: {self.date_of_death})"
-
-
+#book model represents books in the database
 class Book(db.Model):
-    __tablename__= "books"
+    __tablename__ = 'book'
 
+    #id is the primary key for each book, it is automatically incremented
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    isbn = db.Column(db.String(20), nullable=False, unique=True)
-    title = db.Column(db.String(200), nullable=False)
-    publication_year = db.Column(db.Integer, nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
+    isbn = db.Column(db.String(13), nullable=False, unique=True)
+    #title is a string column that stores the book's title and cannot be null
+    title = db.Column(db.String(255), nullable=False)
+    publication_year = db.Column(db.Integer)
+    #author_id is a foreign key that links to the Author model's id
+    #This establishes a relationship between the Book and Author models
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
 
-    author = db.relationship('Author', backref='books')
+    # author creates a relationship between Book and Author models
+    # It allows easy access to the author's details from a book object
+    author = db.relationship('Author', backref=db.backref('books', lazy=True))
 
+    # __repr__ method is used to provide a string representation of the book
     def __repr__(self):
-        # debug method
-        return f"<Book(id={self.id}, title='{self.title}', isbn='{self.isbn}', publication_year={self.publication_year}, author_id={self.author_id})>"
-
-    def __str__(self):
-        # display what is inside
-        return f"{self.title} (ISBN: {self.isbn}, Year: {self.publication_year}, Author ID: {self.author_id})"
+        return f'<Book {self.title}>'

@@ -3,40 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookALchemy - Library</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two&family=Finlandica&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Library</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to BookALchemy - Library</h1>
+    <h1>Welcome to the Library</h1>
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="alert">
-                    {% for category, message in messages %}
-                        <p class="alert-message">{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <!-- Search form -->
+    <form method="POST" action="{{ url_for('search') }}">
+    <input type="text" name="search_query" placeholder="Search for books...">
+    <button type="submit">Search</button>
+</form>
 
-        <!-- Search Form -->
-        <div class="search-form">
-            <form action="{{ url_for('home') }}" method="get">
-                <input type="text" name="search" placeholder="Search for a book..." value="{{ request.args.get('search') }}">
-                <button type="submit">Search</button>
-            </form>
-        </div>
 
-        <!-- Sort by Dropdown -->
-        <div class="sort-form">
-            <form action="{{ url_for('home') }}" method="get">
-                <label for="sort_by">Sort by:</label>
-                <select name="sort_by" id="sort_by" onchange="this.form.submit()">
-                    <option value="title" {% if request.args.get('sort_by') == 'title' %}selected{% endif %}>Title</option>
-                    <option value="author" {% if request.args.get('sort_by') == 'author' %}selected{% endif %}>Author</option>
-                </select>
-            </form>
-        </div>
+    <!-- Books list -->
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }} by {{ book.author.name }}
+                <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('add_author') }}">Add Author</a> | <a href="{{ url_for('add_book') }}">Add Book</a>
+</body>
+</html>

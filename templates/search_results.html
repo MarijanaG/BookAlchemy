@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <!-- Display message if no results found -->
+    {% if results %}
+        <ul>
+            <!-- Loop through each book and display its details -->
+            {% for book in results %}
+                <li>
+                    <strong>{{ book.title }}</strong><br>
+                    ISBN: {{ book.isbn }}<br>
+                    Publication Year: {{ book.publication_year }}<br>
+                    Author: {{ book.author.name }}<br>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+
+    <br><br>
+    <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>
